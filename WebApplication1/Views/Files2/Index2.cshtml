@@ -1,0 +1,42 @@
+﻿@model FileClass
+@using Microsoft.AspNetCore.Http;
+@{
+    ViewData["Title"] = "Evrak Sayfası";
+}
+
+<form asp-controller="Files2" asp-action="Index2" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" />
+    <hr />
+    <button class="btn btn-secondary" type="submit">Yükle</button>
+</form>
+
+@if (Model != null)
+{
+    <hr />
+    <table class="table table-bordered table-striped" cellpadding="0" cellspacing="0" border="1">
+        <thead>
+            <tr>
+                <th>Numara</th>
+                <th>Belge Adı</th>
+                <th>Görüntüleme Şekli</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (FileClass file in Model.Files)
+            {
+                <tr>
+                    <td>@file.FileId</td>
+                    <td>@file.Name</td>
+                    <td>
+                        <a href="../Files2/Index2?fileName=@file.Name" style="margin-right:10px">Geçerli Sayfa</a>
+                        <a href="../Files2/PDFViewerNewTab?fileName=@file.Name" target="_blank">Yeni Sayfa</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<br />
+<br />
+
+<embed id="embPDF" src="/files2/@Model.Name" style="width:100%; height:1200px;" />

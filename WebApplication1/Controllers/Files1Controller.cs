@@ -23,8 +23,9 @@ namespace WebApplication1.Controllers
 			int nId = 1;
 			foreach (string pdfPath in Directory.EnumerateFiles(path, "*.pdf"))
 			{
-				if (Session!=null && pdfPath.Contains(Session))
-				{
+				if (Session!=null && pdfPath.Contains(Session) && pdfPath.Contains("İmza Sirküleri"))
+
+                {
 					string vs = Session;
 
 					if (Session == vs)
@@ -50,7 +51,7 @@ namespace WebApplication1.Controllers
 			var Session = HttpContext.Session.GetString("VergiNo");
 			try
 			{
-				string fileName = $"{hostingEnvironment.WebRootPath}\\files\\{Session}_{file.FileName}";
+				string fileName = $"{hostingEnvironment.WebRootPath}\\files\\{Session}_İmza Sirküleri_{file.FileName}";
 				using (FileStream fileStream = System.IO.File.Create(fileName))
 				{
 					file.CopyTo(fileStream);

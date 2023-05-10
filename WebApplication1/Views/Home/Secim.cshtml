@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNetCore.Http;
+@model IEnumerable<WebApplication1.Models.UserViewModel>;
+@{
+    ViewData["Title"] = "Bilgi Sayfası";
+}
+
+<style>
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 70vh;
+    }
+
+    .button {
+        margin: 0 10px;
+        padding: 10px 15px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+</style>
+
+<div class="container">
+    <a href="/Files1/Index" class="button">İmza Sirküleri</a>
+    <a href="/Files2/Index2" class="button">Vergi Levası</a>
+    <a href="/Files3/Index3" class="button">Bu neydi?!</a>
+</div>
