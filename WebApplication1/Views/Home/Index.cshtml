@@ -1,0 +1,126 @@
+﻿@using Microsoft.AspNetCore.Http;
+@{
+    ViewData["Title"] = "Anasayfa";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f7f7f7;
+        }
+
+        .baslik {
+            text-align: center;
+            margin: auto;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .flexcontainer {
+            display: flex;
+        }
+
+        .first {
+            border-top: 1px solid #d4d4d4;
+            width: 49%;
+            text-align: left;
+        }
+
+        .second img {
+            max-width: 800px;
+            height: auto;
+        }
+
+        .second {
+            width: 49%;
+            height: auto;
+            box-sizing: border-box;
+        }
+
+        .first h4 {
+            color: lightgrey;
+            margin-top: 10px;
+        }
+
+        .first h4,
+        h1,
+        p {
+            font-family: arial;
+            padding-left: 30px;
+        }
+
+        .first h1 {
+            margin-top: 20px;
+        }
+
+        .first p {
+            margin-top: 15px;
+            font-size: 21px;
+        }
+
+        img {
+            padding: 60px;
+            margin: 10px;
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1 class="baslik">Anasayfa</h1>
+    </div>
+    <div class="flexcontainer">
+        <span>
+            <img src="/images/resim2.png" alt="foto" />
+        </span>
+        <span class="first">
+            <h4>ÖNE ÇIKANLARDA</h4>
+            <h1>EIB Global</h1>
+            <p>
+                Avrupa Birliği, Birleşik Krallık ve EFTA dışında, AYB 10,8 € sağladı
+                2022'de milyar finansman. AB bankası 160'tan fazla ülkede faaliyet gösteriyor
+                dünya çapında ülkeler ve Team Europe'un önemli bir ortağıdır.
+                <br />
+                <br />
+                Dünya çapındaki kilit yatırımlarımız istikrar yaratmaya,
+                Sürdürülebilir büyüme ve iklim değişikliği ile mücadele.
+            </p>
+        </span>
+    </div>
+    <div class="flexcontainer">
+        <span class="first">
+            <h4>ÖNE ÇIKANLARDA</h4>
+            <h1>AB İklim Bankası</h1>
+            <p>
+                Avrupa Yatırım Bankası dünyanın en önemli finansörlerinden biridir.
+                iklim eylemi. 2021-2030 on yılı,
+                gezegenin iklim ve çevre acil durumu. Bunu başarmak için trilyonlarca
+                yatırımı gerekmektedir. Avrupa Birliği ve AYB Grubu oynuyor
+                Paris Anlaşması'nın uygulanmasında öncü bir rol. biz yerleştiririz
+                sürdürülebilirlik, faaliyetlerimizin merkezinde yer alıyor.
+            </p>
+        </span>
+        <span>
+            <img src="/images/resim.png" alt="foto" />
+        </span>
+    </div>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023 - *** Ltd.Şti. Ticaret A.Ş.
+        </div>
+    </footer>
+</body>
+</html>
+
