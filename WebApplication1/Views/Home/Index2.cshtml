@@ -5,9 +5,10 @@
 }
 
 <style>
-    body{
+    body {
         background-color: #f7f7f7;
     }
+
     h1 {
         color: #333;
         font-size: 24px;
@@ -39,34 +40,85 @@
             background-color: #45a049;
         }
 </style>
-<body>
-<h1>Dosya Seçimi</h1>
+<script>
+    function validateForm() {
+        var radios1 = document.getElementsByName('folder1');
+        var radios2 = document.getElementsByName('folder2');
+        var radios3 = document.getElementsByName('folder3');
 
-<form method="post" action="/Home/ProcessSelection">
-    @try
-    {
-        @foreach (var folderName in Model.Select(f => f.FolderName).Distinct())
-        {
-            <h2>@folderName</h2>
+        var radioSelected1 = false;
+        var radioSelected2 = false;
+        var radioSelected3 = false;
 
-            <table>
-                @foreach (var file in Model.Where(f => f.FolderName == folderName))
-                {
-                    <tr>
-                        <td>
-                            <input type="radio" name="@folderName" value="@file.Path" />
-                        </td>
-                        <td>@file.Name</td>
-                    </tr>
-                }
-            </table>
+        for (var i = 0; i < radios1.length; i++) {
+            if (radios1[i].checked) {
+                radioSelected1 = true;
+                break;
+            }
         }
 
-    }
-    catch (ArgumentNullException)
-    {
+        for (var i = 0; i < radios2.length; i++) {
+            if (radios2[i].checked) {
+                radioSelected2 = true;
+                break;
+            }
+        }
 
+        for (var i = 0; i < radios3.length; i++) {
+            if (radios3[i].checked) {
+                radioSelected3 = true;
+                break;
+            }
+        }
+
+        if (!radioSelected1 || !radioSelected2 || !radioSelected3) {
+            alert('Lütfen her bir klasör için bir dosya seçin.');
+            return false;
+        }
+
+        return true;
     }
-    <button type="submit">Seçimi İşle</button>
-</form>
+</script>
+
+<body>
+    <h1>Dosya Seçimi</h1>
+
+    <form id="fileSelectionForm" method="post" action="/Home/ProcessSelection" onsubmit="return validateForm()">
+        @try
+        {
+            @foreach (var folderName in Model.Select(f => f.FolderName).Distinct())
+            {
+                <h2>@folderName</h2>
+
+                <table>
+                    @foreach (var file in Model.Where(f => f.FolderName == folderName))
+                    {
+                        <tr>
+                            <td>
+                                @if (folderName == "İmza Sirküleri")
+                                {
+                                    <input type="radio" name="folder1" value="@file.Path" />
+                                }
+                                else if (folderName == "Vergi Levhası")
+                                {
+                                    <input type="radio" name="folder2" value="@file.Path" />
+                                }
+                                else if (folderName == "files3")
+                                {
+                                    <input type="radio" name="folder3" value="@file.Path" />
+                                }
+                            </td>
+                            <td>@file.Name</td>
+                        </tr>
+                    }
+                </table>
+            }
+        }
+        catch (ArgumentNullException)
+        {
+
+        }
+        <button type="submit">Seçimi İşle</button>
+    </form>
+
 </body>

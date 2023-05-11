@@ -1,13 +1,48 @@
 ﻿@using System.IO
+@using Microsoft.AspNetCore.Http;
+@{
+    ViewData["Title"] = "İmza Gönderimi";
+}
 <style>
     body {
         background-color: #f7f7f7;
+        font-family: Arial, sans-serif;
     }
+
+    h2 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    #UL {
+        list-style-type: disc;
+        margin-left: 20px;
+    }
+
+    #LI {
+        margin-bottom: 10px;
+    }
+
+    #tik {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 4px;
+    }
+
+        tik:hover {
+        background-color: #45a049;
+        }
 </style>
 <h2>Seçilen Dosyaların Listesi</h2>
-<ul style="list-style-type: disc; margin-left: 20px;">
+<ul id="UL">
     @foreach (var file in new DirectoryInfo("C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\NewFolder").GetFiles())
     {
-        <li>@file.Name</li>
+        <li id="LI">@file.Name</li>
     }
 </ul>
+
+<a id="tik" href="#">Seçilen dosyaları imzala</a>
