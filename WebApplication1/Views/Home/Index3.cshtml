@@ -1,5 +1,9 @@
 ﻿@using System.IO
-
+<style>
+    body {
+        background-color: #f7f7f7;
+    }
+</style>
 <h2>Seçilen Dosyaların Listesi</h2>
 <ul style="list-style-type: disc; margin-left: 20px;">
     @foreach (var file in new DirectoryInfo("C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\NewFolder").GetFiles())
