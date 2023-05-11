@@ -13,34 +13,46 @@ namespace WebApplication1.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
         [HttpGet]
-        public IActionResult Index2(string fileName = "")
+        public IActionResult Index2(string fileName = "", bool isDelete = false)
         {
             string Session = HttpContext.Session.GetString("VergiNo");
 
             FileClass fileobj = new FileClass();
             fileobj.Name = fileName;
-            string path = $"{_hostingEnvironment.WebRootPath}\\files2\\";
+            string path = $"{_hostingEnvironment.WebRootPath}\\Vergi Levhası\\";
             int nId = 1;
-            foreach (string pdfPath in Directory.EnumerateFiles(path, "*.pdf"))
+            if (isDelete)
             {
-                if (Session != null && pdfPath.Contains(Session) && pdfPath.Contains("Vergi Levhası"))
+                string filePath = $"{_hostingEnvironment.WebRootPath}\\Vergi Levhası\\{fileobj.Name}";
+                if (System.IO.File.Exists(filePath))
                 {
-                    string vs = Session;
+                    System.IO.File.Delete(filePath);
+                }
+            }
 
-                    if (Session == vs)
+            if (Session != null)
+            {
+                foreach (string pdfPath in Directory.EnumerateFiles(path, "*.pdf"))
+                {
+                    if (pdfPath.Contains(Session))
                     {
-                        fileobj.Files.Add(new FileClass()
+                        string vs = Session;
+
+                        if (Session == vs)
                         {
-                            FileId = nId++,
-                            Name = Path.GetFileName(pdfPath),
-                            Path = pdfPath
-                        });
+                            fileobj.Files.Add(new FileClass()
+                            {
+                                FileId = nId++,
+                                Name = Path.GetFileName(pdfPath),
+                                Path = pdfPath
+                            });
+                        }
                     }
                 }
-                else
-                {
-                    return Redirect("/Files1/Yonlendirme");
-                }
+            }
+            else if (Session == null)
+            {
+                return Redirect("/Files1/Yonlendirme");
             }
             return View(fileobj);
         }
@@ -50,7 +62,7 @@ namespace WebApplication1.Controllers
             var Session = HttpContext.Session.GetString("VergiNo");
             try
             {
-                string fileName = $"{hostingEnvironment.WebRootPath}\\files2\\{Session}_Vergi Levhası_{file.FileName}";
+                string fileName = $"{hostingEnvironment.WebRootPath}\\Vergi Levhası\\{Session}_Vergi Levhası_{file.FileName}";
                 using (FileStream fileStream = System.IO.File.Create(fileName))
                 {
                     file.CopyTo(fileStream);
@@ -65,7 +77,7 @@ namespace WebApplication1.Controllers
         }
         public IActionResult PDFViewerNewTab(string fileName)
         {
-            string path = _hostingEnvironment.WebRootPath + "\\files2\\" + fileName;
+            string path = _hostingEnvironment.WebRootPath + "\\Vergi Levhası\\" + fileName;
             return File(System.IO.File.ReadAllBytes(path), "application/pdf");
         }
     }

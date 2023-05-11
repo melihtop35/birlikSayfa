@@ -1,4 +1,5 @@
 ﻿namespace WebApplication1.Models
+
 {
     public class FileClass
     {
@@ -6,5 +7,7 @@
         public string Name { get; set; }
         public string Path { get; set; }
         public List<FileClass> Files { get; set; }=new List<FileClass>();
+        public string FolderName { get; set; } // Klasör adı
+
     }
 }

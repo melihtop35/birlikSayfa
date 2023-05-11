@@ -4,6 +4,7 @@
     ViewData["Title"] = "Evrak Sayfası";
 }
 
+<h3>İmza Sirküleri Yükleyin</h3><br />
 <form asp-controller="Files1" asp-action="Index" method="post" enctype="multipart/form-data">
     <input type="file" name="file" />
     <hr/>
@@ -18,6 +19,7 @@
                 <th>Numara</th>
                 <th>Belge Adı</th>
                 <th>Görüntüleme Şekli</th>
+                <th>İşlem</th>
             </tr>
         </thead>
         <tbody>
@@ -29,6 +31,9 @@
                     <td>
                         <a href="../Files1/Index?fileName=@file.Name" style="margin-right:10px">Geçerli Sayfa</a>
                         <a href="../Files1/PDFViewerNewTab?fileName=@file.Name" target="_blank">Yeni Sayfa</a>
+                    </td>
+                    <td style="width:100px;text-align:center;">
+                        <a href="../Files1/Index?fileName=@file.Name&isDelete=true" style="margin-right:10px">Sil</a>
                     </td>
                 </tr>
             }

@@ -13,7 +13,7 @@ namespace WebApplication1.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
         [HttpGet]
-        public IActionResult Index3(string fileName = "")
+        public IActionResult Index3(string fileName = "", bool isDelete = false)
         {
             string Session = HttpContext.Session.GetString("VergiNo");
 
@@ -21,26 +21,38 @@ namespace WebApplication1.Controllers
             fileobj.Name = fileName;
             string path = $"{_hostingEnvironment.WebRootPath}\\files3\\";
             int nId = 1;
-            foreach (string pdfPath in Directory.EnumerateFiles(path, "*.pdf"))
+            if (isDelete)
             {
-                if (Session != null && pdfPath.Contains(Session) && pdfPath.Contains("Ney"))
+                string filePath = $"{_hostingEnvironment.WebRootPath}\\files3\\{fileobj.Name}";
+                if (System.IO.File.Exists(filePath))
                 {
-                    string vs = Session;
+                    System.IO.File.Delete(filePath);
+                }
+            }
 
-                    if (Session == vs)
+            if (Session != null)
+            {
+                foreach (string pdfPath in Directory.EnumerateFiles(path, "*.pdf"))
+                {
+                    if (pdfPath.Contains(Session))
                     {
-                        fileobj.Files.Add(new FileClass()
+                        string vs = Session;
+
+                        if (Session == vs)
                         {
-                            FileId = nId++,
-                            Name = Path.GetFileName(pdfPath),
-                            Path = pdfPath
-                        });
+                            fileobj.Files.Add(new FileClass()
+                            {
+                                FileId = nId++,
+                                Name = Path.GetFileName(pdfPath),
+                                Path = pdfPath
+                            });
+                        }
                     }
                 }
-                else
-                {
-                    return Redirect("/Files1/Yonlendirme");
-                }
+            }
+            else if (Session == null)
+            {
+                return Redirect("/Files1/Yonlendirme");
             }
             return View(fileobj);
         }

@@ -1,0 +1,76 @@
+﻿@model List<WebApplication1.Models.FileClass>
+@using Microsoft.AspNetCore.Http;
+@{
+    ViewData["Title"] = "İmza Gönderimi";
+}
+
+<style>
+    h1 {
+        color: #333;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    h2 {
+        color: #666;
+        font-size: 18px;
+        margin-top: 30px;
+        margin-bottom: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    td {
+        padding: 3px;
+    }
+
+    input[type="radio"] {
+        margin-right: 2px;
+    }
+
+    button[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+</style>
+
+<h1>Dosya Seçimi</h1>
+
+<form method="post" action="/Home/ProcessSelection">
+    @try
+    {
+        @foreach (var folderName in Model.Select(f => f.FolderName).Distinct())
+        {
+            <h2>@folderName</h2>
+
+            <table>
+                @foreach (var file in Model.Where(f => f.FolderName == folderName))
+                {
+                    <tr>
+                        <td>
+                            <input type="radio" name="@folderName" value="@file.Path" />
+                        </td>
+                        <td>@file.Name</td>
+                    </tr>
+                }
+            </table>
+        }
+
+    }
+    catch (ArgumentNullException)
+    {
+
+    }
+    <button type="submit">Seçimi İşle</button>
+</form>

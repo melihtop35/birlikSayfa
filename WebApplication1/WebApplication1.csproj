@@ -21,9 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\files2\" />
+    <Folder Include="wwwroot\Vergi Levhası\" />
     <Folder Include="wwwroot\files3\" />
-    <Folder Include="wwwroot\files\" />
+    <Folder Include="wwwroot\İmza Sirküleri\" />
   </ItemGroup>
 
 </Project>

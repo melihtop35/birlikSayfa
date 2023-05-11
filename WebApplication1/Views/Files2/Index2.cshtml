@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Evrak Sayfası";
 }
+<h3>Vergi Levhası Yükleyin</h3><br />
 
 <form asp-controller="Files2" asp-action="Index2" method="post" enctype="multipart/form-data">
     <input type="file" name="file" />
@@ -19,6 +20,7 @@
                 <th>Numara</th>
                 <th>Belge Adı</th>
                 <th>Görüntüleme Şekli</th>
+                <th>İşlem</th>
             </tr>
         </thead>
         <tbody>
@@ -30,6 +32,9 @@
                     <td>
                         <a href="../Files2/Index2?fileName=@file.Name" style="margin-right:10px">Geçerli Sayfa</a>
                         <a href="../Files2/PDFViewerNewTab?fileName=@file.Name" target="_blank">Yeni Sayfa</a>
+                    </td>
+                    <td style="width:100px;text-align:center;">
+                        <a href="../Files2/Index2?fileName=@file.Name&isDelete=true" style="margin-right:10px">Sil</a>
                     </td>
                 </tr>
             }

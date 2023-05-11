@@ -13,36 +13,49 @@ namespace WebApplication1.Controllers
 			_hostingEnvironment = hostingEnvironment;
 		}
 		[HttpGet]
-		public IActionResult Index(string fileName = "")
+		public IActionResult Index(string fileName = "", bool isDelete=false)
 		{
 			string Session = HttpContext.Session.GetString("VergiNo");
 
 			FileClass fileobj = new FileClass();
 			fileobj.Name = fileName;
-			string path = $"{_hostingEnvironment.WebRootPath}\\files\\";
+			string path = $"{_hostingEnvironment.WebRootPath}\\İmza Sirküleri\\";
 			int nId = 1;
-			foreach (string pdfPath in Directory.EnumerateFiles(path, "*.pdf"))
+
+			if (isDelete)
 			{
-				if (Session!=null && pdfPath.Contains(Session) && pdfPath.Contains("İmza Sirküleri"))
-
-                {
-					string vs = Session;
-
-					if (Session == vs)
-					{
-						fileobj.Files.Add(new FileClass()
-						{
-							FileId = nId++,
-							Name = Path.GetFileName(pdfPath),
-							Path = pdfPath
-						});
-					}
-				}
-				else
+				string filePath = $"{_hostingEnvironment.WebRootPath}\\İmza Sirküleri\\{fileobj.Name}";
+				if (System.IO.File.Exists(filePath))
 				{
-					return Redirect("/Files1/Yonlendirme");
+					System.IO.File.Delete(filePath);
 				}
 			}
+
+            if (Session != null)
+            {
+				foreach (string pdfPath in Directory.EnumerateFiles(path, "*.pdf"))
+				{
+					if (pdfPath.Contains(Session))
+					{
+						string vs = Session;
+
+						if (Session == vs)
+						{
+							fileobj.Files.Add(new FileClass()
+							{
+								FileId = nId++,
+								Name = Path.GetFileName(pdfPath),
+								Path = pdfPath
+							});
+						}
+					}
+				}
+			}
+			else if(Session==null)
+			{
+				return Redirect("/Files1/Yonlendirme");
+			}
+			
 			return View(fileobj);
 		}
 		[HttpPost]
@@ -51,7 +64,7 @@ namespace WebApplication1.Controllers
 			var Session = HttpContext.Session.GetString("VergiNo");
 			try
 			{
-				string fileName = $"{hostingEnvironment.WebRootPath}\\files\\{Session}_İmza Sirküleri_{file.FileName}";
+				string fileName = $"{hostingEnvironment.WebRootPath}\\İmza Sirküleri\\{Session}_İmza Sirküleri_{file.FileName}";
 				using (FileStream fileStream = System.IO.File.Create(fileName))
 				{
 					file.CopyTo(fileStream);
@@ -66,7 +79,7 @@ namespace WebApplication1.Controllers
 		}
 		public IActionResult PDFViewerNewTab(string fileName)
 		{
-			string path = _hostingEnvironment.WebRootPath + "\\files\\" + fileName;
+			string path = _hostingEnvironment.WebRootPath + "\\İmza Sirküleri\\" + fileName;
 			return File(System.IO.File.ReadAllBytes(path), "application/pdf");
 		}
 		public IActionResult Yonlendirme()
