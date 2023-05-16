@@ -1,0 +1,28 @@
+﻿@model List<string>
+
+@{
+    ViewData["Title"] = "QR Kodlu İmzalı PDF Dosyaları";
+}
+
+<style>
+    .qr-code-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+        .qr-code-container img {
+            width: 200px;
+            height: 200px;
+            margin: 5px;
+        }
+</style>
+
+<h2>QR Kodlu İmzalı PDF Dosyaları</h2>
+
+<div class="qr-code-container">
+    @foreach (var qrCodeImage in Model)
+    {
+        <img src="@qrCodeImage" alt="QR Code" />
+    }
+</div>

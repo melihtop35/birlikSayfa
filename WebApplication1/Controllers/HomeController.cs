@@ -3,6 +3,9 @@ using sayfaASP.Models;
 using System.Diagnostics;
 using WebApplication1.Filter;
 using WebApplication1.Models;
+using QRCoder;
+using System.Drawing.Imaging;
+using System.Drawing;
 
 namespace WebApplication1.Controllers
 {
@@ -72,40 +75,53 @@ namespace WebApplication1.Controllers
             // İmza Sirküleri klasöründeki dosyaları yükle
             foreach (string file in Directory.GetFiles("C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\İmza Sirküleri\\"))
             {
-                if (Path.GetFileName(file).Contains(sessionValue))
+                if (sessionValue != null)
                 {
-                    FileClass fileItem = new FileClass();
-                    fileItem.Name = Path.GetFileName(file);
-                    fileItem.Path = file;
-                    fileItem.FolderName = "İmza Sirküleri"; // Klasör adını ayarlayın
-                    files.Add(fileItem);
+                    if (Path.GetFileName(file).Contains(sessionValue))
+                    {
+                        FileClass fileItem = new FileClass();
+                        fileItem.Name = Path.GetFileName(file);
+                        fileItem.Path = file;
+                        fileItem.FolderName = "İmza Sirküleri"; // Klasör adını ayarlayın
+                        files.Add(fileItem);
+                    }
                 }
             }
 
             // Vergi Levhası klasöründeki dosyaları yükle
             foreach (string file in Directory.GetFiles("C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\Vergi Levhası\\"))
             {
-                if (Path.GetFileName(file).Contains(sessionValue))
+                if (sessionValue != null)
                 {
-                    FileClass fileItem = new FileClass();
-                    fileItem.Name = Path.GetFileName(file);
-                    fileItem.Path = file;
-                    fileItem.FolderName = "Vergi Levhası"; // Klasör adını ayarlayın
-                    files.Add(fileItem);
+                    if (Path.GetFileName(file).Contains(sessionValue))
+                    {
+                        FileClass fileItem = new FileClass();
+                        fileItem.Name = Path.GetFileName(file);
+                        fileItem.Path = file;
+                        fileItem.FolderName = "Vergi Levhası"; // Klasör adını ayarlayın
+                        files.Add(fileItem);
+                    }
                 }
             }
 
             // files3 klasöründeki dosyaları yükle
             foreach (string file in Directory.GetFiles("C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\files3\\"))
             {
-                if (Path.GetFileName(file).Contains(sessionValue))
+                if (sessionValue != null)
                 {
-                    FileClass fileItem = new FileClass();
-                    fileItem.Name = Path.GetFileName(file);
-                    fileItem.Path = file;
-                    fileItem.FolderName = "files3"; // Klasör adını ayarlayın
-                    files.Add(fileItem);
+                    if (Path.GetFileName(file).Contains(sessionValue))
+                    {
+                        FileClass fileItem = new FileClass();
+                        fileItem.Name = Path.GetFileName(file);
+                        fileItem.Path = file;
+                        fileItem.FolderName = "files3"; // Klasör adını ayarlayın
+                        files.Add(fileItem);
+                    }
                 }
+            }
+            if(sessionValue == null)
+            {
+                return Redirect("/Files1/Yonlendirme");
             }
 
             return View(files);
@@ -147,6 +163,5 @@ namespace WebApplication1.Controllers
         {
             return View();
         }
-
     }
 }
