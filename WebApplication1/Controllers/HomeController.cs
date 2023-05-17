@@ -73,7 +73,7 @@ namespace WebApplication1.Controllers
             List<FileClass> files = new List<FileClass>();
 
             // İmza Sirküleri klasöründeki dosyaları yükle
-            foreach (string file in Directory.GetFiles("C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\İmza Sirküleri\\"))
+            foreach (string file in Directory.GetFiles("wwwroot\\İmza Sirküleri\\"))
             {
                 if (sessionValue != null)
                 {
@@ -89,7 +89,7 @@ namespace WebApplication1.Controllers
             }
 
             // Vergi Levhası klasöründeki dosyaları yükle
-            foreach (string file in Directory.GetFiles("C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\Vergi Levhası\\"))
+            foreach (string file in Directory.GetFiles("wwwroot\\Vergi Levhası\\"))
             {
                 if (sessionValue != null)
                 {
@@ -105,7 +105,7 @@ namespace WebApplication1.Controllers
             }
 
             // files3 klasöründeki dosyaları yükle
-            foreach (string file in Directory.GetFiles("C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\files3\\"))
+            foreach (string file in Directory.GetFiles("wwwroot\\files3\\"))
             {
                 if (sessionValue != null)
                 {
@@ -134,7 +134,7 @@ namespace WebApplication1.Controllers
         public IActionResult ProcessSelection(Dictionary<string, string> selectedFiles)
         {
             // Yeni bir klasör oluşturma
-            string newFolderPath = Path.Combine("C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\", "NewFolder");
+            string newFolderPath = Path.Combine("wwwroot\\", "NewFolder");
             Directory.CreateDirectory(newFolderPath);
 
             foreach (string existingFile in Directory.GetFiles(newFolderPath))

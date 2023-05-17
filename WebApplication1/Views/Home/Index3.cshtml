@@ -38,11 +38,12 @@
         }
 </style>
 <h2>Seçilen Dosyaların Listesi</h2>
+<form method="post" action="/ESignature/SignDocument">
 <ul id="UL">
-    @foreach (var file in new DirectoryInfo("C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\NewFolder").GetFiles())
+    @foreach (var file in new DirectoryInfo("wwwroot\\NewFolder").GetFiles())
     {
         <li id="LI">@file.Name</li>
     }
 </ul>
-
-<a id="tik" href="/QRCode/QRCode">Seçilen dosyaları imzala</a>
+    <button id="tik" type="submit">Belgeyi İmzala</button>
+</form>

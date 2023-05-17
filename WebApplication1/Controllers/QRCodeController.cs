@@ -41,7 +41,7 @@ namespace WebApplication1.Controllers
             ViewBag.UserList = users;
 
             // QR kodu oluşturma
-            var qrCodeText = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=ygUXbmV2ZXIgZ29ubmEgZ2l2ZSB5b3UgdXA%3D";
+            var qrCodeText = sessionValue /*"https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=ygUXbmV2ZXIgZ29ubmEgZ2l2ZSB5b3UgdXA%3D"*/;
             var qrGenerator = new QRCodeGenerator();
             var qrCodeData = qrGenerator.CreateQrCode(qrCodeText, QRCodeGenerator.ECCLevel.Q);
             var qrCode = new QRCode(qrCodeData);
