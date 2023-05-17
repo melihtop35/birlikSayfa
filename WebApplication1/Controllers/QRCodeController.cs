@@ -2,50 +2,59 @@
 using QRCoder;
 using System.Drawing.Imaging;
 using System.Drawing;
+using sayfaASP.Models;
+using WebApplication1.Models;
+using Microsoft.AspNetCore.Http;
+using System.Linq;
 
 namespace WebApplication1.Controllers
 {
     public class QRCodeController : Controller
     {
+        private readonly DataContext _context;
+
+        public QRCodeController(DataContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult QRCode()
         {
-            string folderPath = "C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\NewFolder";
-            DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
-            List<string> filePaths = new List<string>();
+            var sessionValue = HttpContext.Session.GetString("VergiNo");
 
-            foreach (var file in directoryInfo.GetFiles())
+            var users = (from u in _context.Users
+                         join ui in _context.UsersInfo on u.Name equals ui.NameId
+                         join uu in _context.UsersUnit on u.Unit equals uu.UnitId
+                         where u.taxNo == sessionValue
+                         select new UserViewModel
+                         {
+                             Id = u.Id,
+                             taxNo = u.taxNo,
+                             tcNo = u.tcNo,
+                             Email = u.Email,
+                             UnitAd = uu.UnitAd,
+                             NameUser = ui.NameUser,
+                             Surname = ui.Surname,
+                             Phone = ui.Phone
+                         }).ToList();
+
+            ViewBag.UserList = users;
+
+            // QR kodu oluşturma
+            var qrCodeText = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=ygUXbmV2ZXIgZ29ubmEgZ2l2ZSB5b3UgdXA%3D";
+            var qrGenerator = new QRCodeGenerator();
+            var qrCodeData = qrGenerator.CreateQrCode(qrCodeText, QRCodeGenerator.ECCLevel.Q);
+            var qrCode = new QRCode(qrCodeData);
+            var qrCodeImage = qrCode.GetGraphic(5);
+
+            using (var stream = new MemoryStream())
             {
-                if (file.Extension == ".pdf")
-                {
-                    filePaths.Add(file.FullName);
-                }
+                qrCodeImage.Save(stream, ImageFormat.Png);
+                var qrCodeBase64 = Convert.ToBase64String(stream.ToArray());
+                ViewBag.QRCodeBase64 = qrCodeBase64;
             }
 
-            List<string> qrCodeBase64Images = new List<string>();
-            foreach (var filePath in filePaths)
-            {
-                // QR kodu içeriğini PDF dosyasının yoluna ayarlayın
-                string qrCodeContent = filePath;
-
-                // QR kod oluşturucu nesnesini oluşturun
-                QRCodeGenerator qrGenerator = new QRCodeGenerator();
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrCodeContent, QRCodeGenerator.ECCLevel.Q);
-                QRCode qrCode = new QRCode(qrCodeData);
-
-                // QR kodu bir görüntü olarak kaydedin
-                Bitmap qrCodeImage = qrCode.GetGraphic(20); // 20 piksel genişlik
-
-                // QR kod görüntüsünü MemoryStream'e yazdırın
-                MemoryStream ms = new MemoryStream();
-                qrCodeImage.Save(ms, ImageFormat.Png);
-                ms.Seek(0, SeekOrigin.Begin);
-
-                // Görüntüyü Base64 string'e çevirin ve listeye ekleyin
-                qrCodeBase64Images.Add("data:image/png;base64," + Convert.ToBase64String(ms.ToArray()));
-            }
-
-            // QR kodlu imzalı PDF dosyalarının listesini görüntüleyen sayfaya gönderin
-            return View(qrCodeBase64Images);
+            return View();
         }
     }
 }
