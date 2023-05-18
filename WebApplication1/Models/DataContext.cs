@@ -10,5 +10,6 @@ namespace sayfaASP.Models
         public DbSet<User> Users { get; set; }
         public DbSet<UsersInfo> UsersInfo { get; set; }
         public DbSet<UsersUnit> UsersUnit { get; set; }
+        public DbSet<UsersCom> UsersCom { get; set; }
     }
 }

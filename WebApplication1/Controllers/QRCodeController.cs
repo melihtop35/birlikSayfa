@@ -39,9 +39,13 @@ namespace WebApplication1.Controllers
                          }).ToList();
 
             ViewBag.UserList = users;
-
+            var tcNo = _context.Users
+    .Where(u => u.taxNo == sessionValue)
+    .Select(u => u.tcNo)
+    .FirstOrDefault();
+            ViewBag.UserList = users;
             // QR kodu oluşturma
-            var qrCodeText = sessionValue /*"https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=ygUXbmV2ZXIgZ29ubmEgZ2l2ZSB5b3UgdXA%3D"*/;
+            var qrCodeText = tcNo;
             var qrGenerator = new QRCodeGenerator();
             var qrCodeData = qrGenerator.CreateQrCode(qrCodeText, QRCodeGenerator.ECCLevel.Q);
             var qrCode = new QRCode(qrCodeData);

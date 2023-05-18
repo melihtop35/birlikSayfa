@@ -27,9 +27,11 @@ namespace WebApplication1.Controllers
             var users = from u in _context.Users
                         join ui in _context.UsersInfo on u.Name equals ui.NameId
                         join uu in _context.UsersUnit on u.Unit equals uu.UnitId
+                        join uo in _context.UsersCom on u.Com equals uo.ComId
                         select new
                         {
                             u.Id,
+                            uo.ComAd,
                             u.taxNo,
                             u.tcNo,
                             u.Email,
@@ -42,6 +44,7 @@ namespace WebApplication1.Controllers
             var viewModel = users.Select(u => new UserViewModel
             {
                 Id = u.Id,
+                ComAd = u.ComAd,
                 taxNo = u.taxNo,
                 tcNo = u.tcNo,
                 Email = u.Email,

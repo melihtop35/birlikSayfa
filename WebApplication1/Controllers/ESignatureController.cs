@@ -11,7 +11,7 @@ public class ESignatureController : Controller
     public IActionResult SignDocument()
     {
         // E-imza servisine istek göndermek için RestSharp kullanıyoruz.
-        var client = new RestClient("örnek api\r\n"); // E-imza servisinizin URL'sini buraya ekleyin
+        var client = new RestClient("https://belge.etikimza.com/api/\r\n"); // E-imza servisinizin URL'sini buraya ekleyin
 
         var request = new RestRequest("sign", Method.Post);
         request.AddJsonBody(new { Document = "wwwroot\\New Folder\\" }); // İmzalanacak belge içeriğini burada belirtin

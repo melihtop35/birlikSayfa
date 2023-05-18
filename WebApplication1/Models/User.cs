@@ -12,5 +12,6 @@ namespace WebApplication1.Models
         public string Email { get; set; }
         public int Name { get; set; }
         public int Unit { get; set; }
+        public int Com { get; set; }
     }
 }
