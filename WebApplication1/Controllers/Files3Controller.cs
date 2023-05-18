@@ -72,7 +72,7 @@ namespace WebApplication1.Controllers
             }
             catch (NullReferenceException)
             {
-                return Redirect("/Files1/Index");
+                return Redirect("/Files3/Index3");
             }
         }
         public IActionResult PDFViewerNewTab(string fileName)
