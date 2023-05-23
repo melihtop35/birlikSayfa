@@ -7,6 +7,8 @@ using WebApplication1.Models;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace WebApplication1.Controllers
 {
@@ -41,12 +43,13 @@ namespace WebApplication1.Controllers
 
             ViewBag.UserList = users;
 
-            // QR kodu oluşturma
+            // QR kodu oluşturma ve şifreleme
             foreach (var user in users)
             {
-                var qrCodeText = user.tcNo;
-                var qrGenerator = new QRCodeGenerator();
-                var qrCodeData = qrGenerator.CreateQrCode(qrCodeText, QRCodeGenerator.ECCLevel.Q);
+                var encryptedTcNo = AESEncryption.Encrypt(user.tcNo);
+
+                var qrCodeGenerator = new QRCodeGenerator();
+                var qrCodeData = qrCodeGenerator.CreateQrCode(encryptedTcNo, QRCodeGenerator.ECCLevel.Q);
                 var qrCode = new QRCode(qrCodeData);
                 var qrCodeImage = qrCode.GetGraphic(5);
 
@@ -59,6 +62,39 @@ namespace WebApplication1.Controllers
             }
 
             return View(users);
+        }
+    }
+
+    public class AESEncryption
+    {
+        private static readonly byte[] Key = Encoding.UTF8.GetBytes("1234567890123456"); // Şifreleme için kullanılacak anahtar (16 byte uzunluğunda)
+        private static readonly byte[] IV = Encoding.UTF8.GetBytes("1234567890123456"); // Şifreleme için kullanılacak IV vektörü (16 byte uzunluğunda)
+
+        public static string Encrypt(string plainText)
+        {
+            byte[] encryptedBytes;
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Key;
+                aes.IV = IV;
+
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                    {
+                        cs.Write(plainTextBytes, 0, plainTextBytes.Length);
+                    }
+
+                    encryptedBytes = ms.ToArray();
+                }
+            }
+
+            return Convert.ToBase64String(encryptedBytes);
         }
     }
 }
