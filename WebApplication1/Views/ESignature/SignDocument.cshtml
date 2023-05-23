@@ -1,17 +1,11 @@
 ﻿@{
-    ViewData["Title"] = "İmza Gönderimi";
+    ViewBag.Title = "PDF İmzalama";
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Signed Document</title>
-</head>
-<body>
-    <div>
-        <h2>İmzalanan Belge</h2>
-        <pre>@ViewBag.SignedDocument</pre>
-    </div>
-</body>
-</html>
+<h2>PDF İmzalama</h2>
+
+@using (Html.BeginForm("SignPDF", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <input type="file" name="file" required />
+    <button type="submit">PDF İmzala</button>
+}

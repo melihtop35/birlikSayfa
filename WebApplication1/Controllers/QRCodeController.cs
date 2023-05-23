@@ -6,6 +6,7 @@ using sayfaASP.Models;
 using WebApplication1.Models;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
+using System.IO;
 
 namespace WebApplication1.Controllers
 {
@@ -39,26 +40,25 @@ namespace WebApplication1.Controllers
                          }).ToList();
 
             ViewBag.UserList = users;
-            var tcNo = _context.Users
-    .Where(u => u.taxNo == sessionValue)
-    .Select(u => u.tcNo)
-    .FirstOrDefault();
-            ViewBag.UserList = users;
-            // QR kodu oluşturma
-            var qrCodeText = tcNo;
-            var qrGenerator = new QRCodeGenerator();
-            var qrCodeData = qrGenerator.CreateQrCode(qrCodeText, QRCodeGenerator.ECCLevel.Q);
-            var qrCode = new QRCode(qrCodeData);
-            var qrCodeImage = qrCode.GetGraphic(5);
 
-            using (var stream = new MemoryStream())
+            // QR kodu oluşturma
+            foreach (var user in users)
             {
-                qrCodeImage.Save(stream, ImageFormat.Png);
-                var qrCodeBase64 = Convert.ToBase64String(stream.ToArray());
-                ViewBag.QRCodeBase64 = qrCodeBase64;
+                var qrCodeText = user.tcNo;
+                var qrGenerator = new QRCodeGenerator();
+                var qrCodeData = qrGenerator.CreateQrCode(qrCodeText, QRCodeGenerator.ECCLevel.Q);
+                var qrCode = new QRCode(qrCodeData);
+                var qrCodeImage = qrCode.GetGraphic(5);
+
+                using (var stream = new MemoryStream())
+                {
+                    qrCodeImage.Save(stream, ImageFormat.Png);
+                    var qrCodeBase64 = Convert.ToBase64String(stream.ToArray());
+                    user.QRCodeBase64 = qrCodeBase64;
+                }
             }
 
-            return View();
+            return View(users);
         }
     }
 }

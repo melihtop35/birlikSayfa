@@ -1,15 +1,13 @@
-﻿@{
-    var qrCodeBase64 = ViewBag.QRCodeBase64;
-}
+﻿@model List<WebApplication1.Models.UserViewModel>
+
 @{
     ViewData["Title"] = "QR Sayfası";
 }
-@model WebApplication1.Models.UserViewModel
-
 <style>
     body {
         background-color: #f7f7f7;
     }
+
     .container {
         display: flex;
         flex-direction: column;
@@ -44,26 +42,27 @@
     <h1>QR Kod Ve Kullanıcılar</h1>
 
     <div class="user-list">
-        @foreach (var user in ViewBag.UserList)
+        @foreach (var user in Model)
         {
             <div class="user-info">
                 <strong>Vergi Numarası:</strong> @user.taxNo <br />
                 <strong>T.C. Numarası:</strong> @user.tcNo <br />
+                <strong>Şirket:</strong> @user.ComAd <br />
                 <strong>E-Posta:</strong> @user.Email <br />
                 <strong>Birliği:</strong> @user.UnitAd <br />
                 <strong>Adı:</strong> @user.NameUser <br />
                 <strong>Soyadı:</strong> @user.Surname <br />
                 <strong>Telefonu:</strong> @user.Phone <br />
+
+                @if (!string.IsNullOrEmpty(user.QRCodeBase64))
+                {
+                    <div class="qr-code">
+                        <a href="data:image/png;base64,@user.QRCodeBase64" download="qrcode.png">
+                            <img src="data:image/png;base64,@user.QRCodeBase64" alt="QR Code" />
+                        </a>
+                    </div>
+                }
             </div>
         }
     </div>
-
-    @if (!string.IsNullOrEmpty(qrCodeBase64))
-    {
-        <div class="qr-code">
-            <a href="data:image/png;base64,@qrCodeBase64" download="qrcode.png">
-                <img src="data:image/png;base64,@qrCodeBase64" alt="QR Code" />
-            </a>
-        </div>
-    }
 </div>

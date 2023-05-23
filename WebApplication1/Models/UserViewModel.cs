@@ -11,5 +11,6 @@
         public string NameUser { get; set; }
         public string Surname { get; set; }
         public string Phone { get; set; }
+        public string QRCodeBase64 { get; internal set; }
     }
 }
