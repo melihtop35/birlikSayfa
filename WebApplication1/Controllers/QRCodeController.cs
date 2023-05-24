@@ -59,6 +59,10 @@ namespace WebApplication1.Controllers
                     var qrCodeBase64 = Convert.ToBase64String(stream.ToArray());
                     user.QRCodeBase64 = qrCodeBase64;
                 }
+
+                // Şifreli tcNo'yu çöz
+                var decryptedTcNo = AESDecryption.Decrypt(encryptedTcNo);
+                user.DecryptedTcNo = decryptedTcNo;
             }
 
             return View(users);
@@ -66,35 +70,76 @@ namespace WebApplication1.Controllers
     }
 
     public class AESEncryption
-    {
-        private static readonly byte[] Key = Encoding.UTF8.GetBytes("1234567890123456"); // Şifreleme için kullanılacak anahtar (16 byte uzunluğunda)
-        private static readonly byte[] IV = Encoding.UTF8.GetBytes("1234567890123456"); // Şifreleme için kullanılacak IV vektörü (16 byte uzunluğunda)
+{
+    private static readonly byte[] Key = Encoding.UTF8.GetBytes("1234567890123456"); // Şifreleme için kullanılacak anahtar (16 byte uzunluğunda)
 
-        public static string Encrypt(string plainText)
+    public static string Encrypt(string plainText)
+    {
+        byte[] encryptedBytes;
+        byte[] iv;
+
+        using (Aes aes = Aes.Create())
         {
-            byte[] encryptedBytes;
+            aes.Key = Key;
+            aes.GenerateIV();
+            iv = aes.IV;
+
+            ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, iv);
+
+            byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                ms.Write(iv, 0, iv.Length);
+
+                using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                {
+                    cs.Write(plainTextBytes, 0, plainTextBytes.Length);
+                }
+
+                encryptedBytes = ms.ToArray();
+            }
+        }
+
+        byte[] encryptedBytesWithIV = new byte[iv.Length + encryptedBytes.Length];
+        Buffer.BlockCopy(iv, 0, encryptedBytesWithIV, 0, iv.Length);
+        Buffer.BlockCopy(encryptedBytes, 0, encryptedBytesWithIV, iv.Length, encryptedBytes.Length);
+
+        return Convert.ToBase64String(encryptedBytesWithIV);
+    }
+}
+
+
+    public class AESDecryption
+    {
+        private static readonly byte[] Key = Encoding.UTF8.GetBytes("1234567890123456"); // Şifreleme için kullanılan aynı anahtar
+        private static readonly byte[] IV = Encoding.UTF8.GetBytes("1234567890123456"); // Şifreleme için kullanılan aynı IV vektörü
+
+        public static string Decrypt(string encryptedText)
+        {
+            byte[] encryptedBytes = Convert.FromBase64String(encryptedText);
+            string decryptedText;
 
             using (Aes aes = Aes.Create())
             {
                 aes.Key = Key;
                 aes.IV = IV;
 
-                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 
-                byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
-
-                using (MemoryStream ms = new MemoryStream())
+                using (MemoryStream ms = new MemoryStream(encryptedBytes))
                 {
-                    using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                    using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
                     {
-                        cs.Write(plainTextBytes, 0, plainTextBytes.Length);
+                        using (StreamReader reader = new StreamReader(cs))
+                        {
+                            decryptedText = reader.ReadToEnd();
+                        }
                     }
-
-                    encryptedBytes = ms.ToArray();
                 }
             }
 
-            return Convert.ToBase64String(encryptedBytes);
+            return decryptedText;
         }
     }
 }
