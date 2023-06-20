@@ -2,10 +2,41 @@
     ViewBag.Title = "PDF İmzalama";
 }
 
-<h2>PDF İmzalama</h2>
+<h1>PDF İmzalama</h1>
+<br />
 
-@using (Html.BeginForm("SignPDF", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@{
+    var sessionValue = Context.Request.HttpContext.Session.GetString("VergiNo");
+    var signedDirectoryPath = System.IO.Path.Combine("wwwroot", "Members", "SignedPDFs", sessionValue.ToString());
+    var signedDirectoryInfo = new DirectoryInfo(signedDirectoryPath);
+    var signedFiles = signedDirectoryInfo.Exists ? signedDirectoryInfo.GetFiles() : new FileInfo[0];
+
+    var unsignedDirectoryPath = System.IO.Path.Combine("wwwroot", "Members", sessionValue.ToString());
+    var unsignedDirectoryInfo = new DirectoryInfo(unsignedDirectoryPath);
+    var unsignedFiles = unsignedDirectoryInfo.Exists ? unsignedDirectoryInfo.GetFiles() : new FileInfo[0];
+
+    var allChecked = signedFiles.All(file => file.Exists);
+}
+
+@if (allChecked)
 {
-    <input type="file" name="file" required />
-    <button type="submit">PDF İmzala</button>
+    <br />
+}
+
+@foreach (var file in signedFiles)
+{
+    var checkBoxId = "checkbox_" + file.Name;
+    var isChecked = file.Exists ? "checked" : "";
+    <input type="checkbox" disabled id="@checkBoxId" @isChecked>
+    @file.Name
+    <br />
+}
+
+@foreach (var file in unsignedFiles)
+{
+    var checkBoxId = "checkbox_" + file.Name;
+    var isChecked = "";
+    <input type="checkbox" disabled id="@checkBoxId" @isChecked>
+    @file.Name
+    <br />
 }

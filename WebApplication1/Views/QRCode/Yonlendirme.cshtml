@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNetCore.Http;
+@{
+    ViewData["Title"] = "Evrak Sayfası";
+}
+
+<style>
+    body {
+        background-color: #f7f7f7;
+    }
+
+    h2 {
+        text-align: center;
+        padding-top: 15%;
+    }
+
+    #butonLink {
+        margin: 40%;
+        padding: 0.5%;
+        background: border-box;
+        background-color: lightgray;
+        color: black;
+        border-radius: 15px;
+    }
+
+        #butonLink:hover {
+            background-color: #f7f7f7;
+        }
+
+</style>
+
+<h2>Belgelerinizin henüz hepsi veya bir kısmı imzalanmamış.</h2>
+<br />
+<a id="butonLink" href="/Home">Anasayfaya Dön</a>

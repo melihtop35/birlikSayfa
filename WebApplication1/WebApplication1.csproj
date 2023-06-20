@@ -18,12 +18,14 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.13" />
+    <PackageReference Include="PdfSharp" Version="1.50.5147" />
     <PackageReference Include="QRCoder" Version="1.4.1" />
     <PackageReference Include="RestSharp" Version="110.2.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\Members\" />
     <Folder Include="wwwroot\Vergi Levhası\" />
     <Folder Include="wwwroot\files3\" />
     <Folder Include="wwwroot\İmza Sirküleri\" />

@@ -85,6 +85,8 @@ namespace AESDecryptionExample
             barcode = barcode.Replace(".", "/");
             barcode = barcode.Replace("ı", "i");
             barcode = barcode.Replace("ş", ";");
+            barcode = barcode.Replace("ç", ".");
+            barcode = barcode.Replace("╣", "ü");
             return barcode;
         }
 

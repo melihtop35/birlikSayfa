@@ -20,9 +20,22 @@ namespace WebApplication1.Controllers
         {
             _context = context;
         }
-
+        public IActionResult Yonlendirme()
+        {
+            return View();
+        }
         public IActionResult QRCode()
         {
+            var sessionValue = HttpContext.Session.GetString("VergiNo");
+
+            // members klasöründe session VergiNo değerinden alınan ada sahip bir klasör var mı kontrol et
+            string signedFolderPath = "C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\Members\\SignedPDFs\\";
+            string sessionFolderPath = Path.Combine(signedFolderPath, sessionValue);
+            bool sessionFolderExists = Directory.Exists(sessionFolderPath);
+            if (!sessionFolderExists)
+            {
+                return Redirect("/QRCode/Yonlendirme");
+            }
             //TcNo session değeri ile oturum açılmış ise yapılan işlemler sessionvalue değişkenine kadar olanlar
             var sessionTcNo = HttpContext.Session.GetString("TcNo");
 
@@ -73,8 +86,6 @@ namespace WebApplication1.Controllers
             }
 
             //-------------------------------------------------------------//
-            var sessionValue = HttpContext.Session.GetString("VergiNo");
-
             var users = (from u in _context.Users
                          join ui in _context.UsersInfo on u.Name equals ui.NameId
                          join uu in _context.UsersUnit on u.Unit equals uu.UnitId

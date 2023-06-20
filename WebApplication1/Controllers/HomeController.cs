@@ -17,7 +17,14 @@ namespace WebApplication1.Controllers
         {
             _context = context;
         }
-
+        public IActionResult Yonlendirme()
+        {
+            return View();
+        }
+        public IActionResult Yonelme()
+        {
+            return View();
+        }
         public IActionResult Index()
         {
             var Session = HttpContext.Session.GetString("VergiNo");
@@ -100,6 +107,23 @@ namespace WebApplication1.Controllers
         }
         public IActionResult Secim()
         {
+            var sessionValue = HttpContext.Session.GetString("VergiNo");
+            // members klasöründe session VergiNo değerinden alınan ada sahip bir klasör var mı kontrol et
+            string membersFolderPath = "C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\Members\\";
+            string sessionFolderPath = Path.Combine(membersFolderPath, sessionValue);
+            bool sessionFolderExists = Directory.Exists(sessionFolderPath);
+            if (sessionFolderExists)
+            {
+                return Redirect("/Home/Yonlendirme");
+            }
+
+            string signedFolderPath = "C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\Members\\SignedPDFs\\";
+            string FolderPath = Path.Combine(signedFolderPath, sessionValue);
+            bool FolderExists = Directory.Exists(FolderPath);
+            if (FolderExists)
+            {
+                return Redirect("/Home/Yonelme");
+            }
             return View();
         }
 
@@ -107,58 +131,66 @@ namespace WebApplication1.Controllers
         {
             var sessionValue = HttpContext.Session.GetString("VergiNo");
 
+            // members klasöründe session VergiNo değerinden alınan ada sahip bir klasör var mı kontrol et
+            string membersFolderPath = "C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\Members\\";
+            string sessionFolderPath = Path.Combine(membersFolderPath, sessionValue);
+            bool sessionFolderExists = Directory.Exists(sessionFolderPath);
+
+            if (sessionValue == null)
+            {
+                return Redirect("/Files1/Yonlendirme");
+            }
+            if (sessionFolderExists)
+            {
+                return Redirect("/Home/Yonlendirme");
+            }
+            string signedFolderPath = "C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\Members\\SignedPDFs\\";
+            string FolderPath = Path.Combine(signedFolderPath, sessionValue);
+            bool FolderExists = Directory.Exists(FolderPath);
+            if (FolderExists)
+            {
+                return Redirect("/Home/Yonelme");
+            }
+
             List<FileClass> files = new List<FileClass>();
 
             // İmza Sirküleri klasöründeki dosyaları yükle
             foreach (string file in Directory.GetFiles("wwwroot\\İmza Sirküleri\\"))
             {
-                if (sessionValue != null)
+                if (Path.GetFileName(file).Contains(sessionValue))
                 {
-                    if (Path.GetFileName(file).Contains(sessionValue))
-                    {
-                        FileClass fileItem = new FileClass();
-                        fileItem.Name = Path.GetFileName(file);
-                        fileItem.Path = file;
-                        fileItem.FolderName = "İmza Sirküleri"; // Klasör adını ayarlayın
-                        files.Add(fileItem);
-                    }
+                    FileClass fileItem = new FileClass();
+                    fileItem.Name = Path.GetFileName(file);
+                    fileItem.Path = file;
+                    fileItem.FolderName = "İmza Sirküleri"; // Klasör adını ayarlayın
+                    files.Add(fileItem);
                 }
             }
 
             // Vergi Levhası klasöründeki dosyaları yükle
             foreach (string file in Directory.GetFiles("wwwroot\\Vergi Levhası\\"))
             {
-                if (sessionValue != null)
+                if (Path.GetFileName(file).Contains(sessionValue))
                 {
-                    if (Path.GetFileName(file).Contains(sessionValue))
-                    {
-                        FileClass fileItem = new FileClass();
-                        fileItem.Name = Path.GetFileName(file);
-                        fileItem.Path = file;
-                        fileItem.FolderName = "Vergi Levhası"; // Klasör adını ayarlayın
-                        files.Add(fileItem);
-                    }
+                    FileClass fileItem = new FileClass();
+                    fileItem.Name = Path.GetFileName(file);
+                    fileItem.Path = file;
+                    fileItem.FolderName = "Vergi Levhası"; // Klasör adını ayarlayın
+                    files.Add(fileItem);
                 }
             }
 
             // files3 klasöründeki dosyaları yükle
             foreach (string file in Directory.GetFiles("wwwroot\\files3\\"))
             {
-                if (sessionValue != null)
+                if (Path.GetFileName(file).Contains(sessionValue))
                 {
-                    if (Path.GetFileName(file).Contains(sessionValue))
-                    {
-                        FileClass fileItem = new FileClass();
-                        fileItem.Name = Path.GetFileName(file);
-                        fileItem.Path = file;
-                        fileItem.FolderName = "files3"; // Klasör adını ayarlayın
-                        files.Add(fileItem);
-                    }
+                    FileClass fileItem = new FileClass();
+                    fileItem.Name = Path.GetFileName(file);
+                    fileItem.Path = file;
+                    fileItem.FolderName = "files3"; // Klasör adını ayarlayın
+                    files.Add(fileItem);
                 }
-            }
-            if(sessionValue == null)
-            {
-                return Redirect("/Files1/Yonlendirme");
             }
 
             return View(files);
@@ -167,11 +199,13 @@ namespace WebApplication1.Controllers
 
 
 
+
         [HttpPost]
         public IActionResult ProcessSelection(Dictionary<string, string> selectedFiles)
         {
+            var sessionValue = HttpContext.Session.GetString("VergiNo");
             // Yeni bir klasör oluşturma
-            string newFolderPath = Path.Combine("wwwroot\\", "NewFolder");
+            string newFolderPath = Path.Combine("wwwroot\\Members", sessionValue);
             Directory.CreateDirectory(newFolderPath);
 
             foreach (string existingFile in Directory.GetFiles(newFolderPath))
