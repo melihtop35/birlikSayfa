@@ -2,41 +2,74 @@
     ViewBag.Title = "PDF İmzalama";
 }
 
-<h1>PDF İmzalama</h1>
-<br />
+<style>
+    h1 {
+        text-align: center;
+    }
 
-@{
-    var sessionValue = Context.Request.HttpContext.Session.GetString("VergiNo");
-    var signedDirectoryPath = System.IO.Path.Combine("wwwroot", "Members", "SignedPDFs", sessionValue.ToString());
-    var signedDirectoryInfo = new DirectoryInfo(signedDirectoryPath);
-    var signedFiles = signedDirectoryInfo.Exists ? signedDirectoryInfo.GetFiles() : new FileInfo[0];
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 50%;
+    }
 
-    var unsignedDirectoryPath = System.IO.Path.Combine("wwwroot", "Members", sessionValue.ToString());
-    var unsignedDirectoryInfo = new DirectoryInfo(unsignedDirectoryPath);
-    var unsignedFiles = unsignedDirectoryInfo.Exists ? unsignedDirectoryInfo.GetFiles() : new FileInfo[0];
+    .checkbox-item {
+        margin-bottom: 2px;
+    }
+</style>
 
-    var allChecked = signedFiles.All(file => file.Exists);
-}
-
-@if (allChecked)
-{
+<body>
+    @{
+        var sessionValue = Context.Request.HttpContext.Session.GetString("VergiNo");
+        if (sessionValue != null)
+        {
+            <h1>PDF İmzalama</h1>
+        }
+    }
     <br />
-}
+    <div class="container">
+        @{
+            if (sessionValue != null)
+            {
+                var signedDirectoryPath = System.IO.Path.Combine("wwwroot", "Members", "SignedPDFs", sessionValue.ToString());
+                var signedDirectoryInfo = new DirectoryInfo(signedDirectoryPath);
+                var signedFiles = signedDirectoryInfo.Exists ? signedDirectoryInfo.GetFiles() : new FileInfo[0];
 
-@foreach (var file in signedFiles)
-{
-    var checkBoxId = "checkbox_" + file.Name;
-    var isChecked = file.Exists ? "checked" : "";
-    <input type="checkbox" disabled id="@checkBoxId" @isChecked>
-    @file.Name
-    <br />
-}
+                var unsignedDirectoryPath = System.IO.Path.Combine("wwwroot", "Members", sessionValue.ToString());
+                var unsignedDirectoryInfo = new DirectoryInfo(unsignedDirectoryPath);
+                var unsignedFiles = unsignedDirectoryInfo.Exists ? unsignedDirectoryInfo.GetFiles() : new FileInfo[0];
 
-@foreach (var file in unsignedFiles)
-{
-    var checkBoxId = "checkbox_" + file.Name;
-    var isChecked = "";
-    <input type="checkbox" disabled id="@checkBoxId" @isChecked>
-    @file.Name
-    <br />
-}
+                var allChecked = signedFiles.All(file => file.Exists);
+
+
+                @foreach (var file in signedFiles)
+                {
+                    var checkBoxId = "checkbox_" + file.Name;
+                    var isChecked = file.Exists ? "checked" : "";
+
+                    <div class="checkbox-item">
+                        <input type="checkbox" disabled id="@checkBoxId" @isChecked>
+                        <label for="@checkBoxId">@file.Name</label>
+                    </div>
+                }
+
+                @foreach (var file in unsignedFiles)
+                {
+                    var checkBoxId = "checkbox_" + file.Name;
+                    var isChecked = "";
+
+                    <div class="checkbox-item">
+                        <input type="checkbox" disabled id="@checkBoxId" @isChecked>
+                        <label for="@checkBoxId">@file.Name</label>
+                    </div>
+                }
+            }
+            else
+            {
+                <h1>Lütfen belge işlemleri için vergi numarası ile giriş yapın</h1>
+            }
+        }
+    </div>
+</body>

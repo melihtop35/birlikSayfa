@@ -7,6 +7,16 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 
+class Program
+{
+    static void Main(string[] args)
+    {
+        string folderPath = "C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\Members\\";
+        SignatureProgram program = new SignatureProgram(folderPath);
+        program.Run();
+    }
+}
+
 public class SignatureProgram
 {
     private string folderPath;
@@ -22,6 +32,8 @@ public class SignatureProgram
 
     public void Run()
     {
+        DeleteEmptyFolders(folderPath);
+
         bool exit = false;
 
         while (!exit)
@@ -32,9 +44,10 @@ public class SignatureProgram
             Console.WriteLine("2. Klasör Seç ve Dosyaları Listele");
             Console.WriteLine("3. Dosya Seç");
             Console.WriteLine("4. Seçilen Dosyaları Aç");
-            Console.WriteLine("5. Seçilen Dosyaları İmzala");
-            Console.WriteLine("6. Çıkış");
-            Console.Write("Seçiminizi yapın (1-6): ");
+            Console.WriteLine("5. Seçilen Dosyaları Listele");
+            Console.WriteLine("6. Seçilen Dosyaları İmzala");
+            Console.WriteLine("7. Çıkış");
+            Console.Write("Seçiminizi yapın (1-7): ");
 
             string input = Console.ReadLine();
 
@@ -53,9 +66,12 @@ public class SignatureProgram
                     OpenSelectedFiles();
                     break;
                 case "5":
-                    SignSelectedFiles();
+                    ListSelectedFiles();
                     break;
                 case "6":
+                    SignSelectedFiles();
+                    break;
+                case "7":
                     exit = true;
                     break;
                 default:
@@ -67,8 +83,25 @@ public class SignatureProgram
             Console.WriteLine("Devam etmek için bir tuşa basın...");
             Console.ReadKey();
         }
+
+        // Program sonlandığında boş klasörleri kontrol et ve sil
+        DeleteEmptyFolders(folderPath);
     }
 
+    private void DeleteEmptyFolders(string rootFolder)
+    {
+        string[] subFolders = Directory.GetDirectories(rootFolder);
+
+        foreach (string folder in subFolders)
+        {
+            DeleteEmptyFolders(folder);
+            if (!Directory.EnumerateFileSystemEntries(folder).Any())
+            {
+                Directory.Delete(folder);
+                Console.WriteLine($"Klasör silindi: {folder}");
+            }
+        }
+    }
     private void ListFolders()
     {
         Console.WriteLine("=== Klasörler ===");
@@ -162,8 +195,8 @@ public class SignatureProgram
             {
                 Console.WriteLine($"Dosya açılıyor: {Path.GetFileName(selectedFile)}");
 
-                // Seçili dosyayı tarayıcıda aç
-                Process.Start(selectedFile);
+                // İşletim sistemine bağlı olarak varsayılan PDF okuyucu uygulamasını açar
+                Process.Start(new ProcessStartInfo(selectedFile) { UseShellExecute = true });
             }
         }
         else
@@ -172,6 +205,21 @@ public class SignatureProgram
         }
     }
 
+    private void ListSelectedFiles()
+    {
+        Console.WriteLine("=== Seçilen Dosyalar ===");
+        if (selectedFiles.Any())
+        {
+            for (int i = 0; i < selectedFiles.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {Path.GetFileName(selectedFiles[i])}");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Henüz hiç dosya seçilmedi.");
+        }
+    }
 
     private void SignSelectedFiles()
     {
@@ -230,6 +278,8 @@ public class SignatureProgram
             }
 
             Console.WriteLine("İşlem tamamlandı. İmzalanan PDF'ler, 'SignedPDFs' klasörünün içindeki ilgili klasöre yerleştirildi ve orijinal dosyalar silindi.");
+            selectedFiles.Clear();
+
         }
         else
         {
@@ -239,14 +289,4 @@ public class SignatureProgram
 
 
 
-}
-
-class Program
-{
-    static void Main(string[] args)
-    {
-        string folderPath = "C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\Members\\";
-        SignatureProgram program = new SignatureProgram(folderPath);
-        program.Run();
-    }
 }

@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS5001: Program, giriş noktası için uygun bir statik 'Main' yöntemi içermiyor
+dotnet_diagnostic.CS5001.severity = none

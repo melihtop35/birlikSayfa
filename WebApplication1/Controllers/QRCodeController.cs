@@ -24,40 +24,68 @@ namespace WebApplication1.Controllers
         {
             return View();
         }
+        public IActionResult Yonelme()
+        {
+            return View();
+        }
         public IActionResult QRCode()
         {
             var sessionValue = HttpContext.Session.GetString("VergiNo");
+            var sessionTcNo = HttpContext.Session.GetString("TcNo");
 
-            // members klasöründe session VergiNo değerinden alınan ada sahip bir klasör var mı kontrol et
-            string signedFolderPath = "C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\Members\\SignedPDFs\\";
+            if (string.IsNullOrEmpty(sessionValue))
+            {
+                // sessionValue boş ise veritabanından tcNo'nun eşit olduğu vergiNo'yu al
+                sessionValue = _context.Users.FirstOrDefault(u => u.tcNo == sessionTcNo)?.taxNo;
+            }
+
+            if (string.IsNullOrEmpty(sessionValue))
+            {
+                // sessionValue hala boş ise yönlendirme yapma
+                return Redirect("/QRCode/Yonelme");
+            }
+
+            // members klasöründe sessionValue değerine sahip bir klasör var mı kontrol et
+            string signedFolderPath = "C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\Members\\";
             string sessionFolderPath = Path.Combine(signedFolderPath, sessionValue);
             bool sessionFolderExists = Directory.Exists(sessionFolderPath);
-            if (!sessionFolderExists)
+
+            if (sessionFolderExists && Directory.GetFiles(sessionFolderPath).Length <= 3)
             {
                 return Redirect("/QRCode/Yonlendirme");
             }
-            //TcNo session değeri ile oturum açılmış ise yapılan işlemler sessionvalue değişkenine kadar olanlar
-            var sessionTcNo = HttpContext.Session.GetString("TcNo");
+
+            string folderPath = "C:\\Users\\melih_o\\Downloads\\sayfaASP-master\\sayfaASP-master\\WebApplication1\\wwwroot\\Members\\SignedPDFs\\";
+            string sFolderPath = Path.Combine(folderPath, sessionValue);
+            bool folderExists = Directory.Exists(sFolderPath);
+
+            if (!folderExists)
+            {
+                return Redirect("/QRCode/Yonelme");
+            }
+
+            //TcNo session değeri ile oturum açılmış ise yapılan işlemler sessionValue değişkenine kadar olanlar
 
             var usersTc = (from u in _context.Users
-                         join ui in _context.UsersInfo on u.Name equals ui.NameId
-                         join uu in _context.UsersUnit on u.Unit equals uu.UnitId
-                         join uo in _context.UsersCom on u.Com equals uo.ComId
-                         where u.tcNo == sessionTcNo
-                         select new UserViewModel
-                         {
-                             Id = u.Id,
-                             taxNo = u.taxNo,
-                             tcNo = u.tcNo,
-                             ComAd = uo.ComAd,
-                             Email = u.Email,
-                             UnitAd = uu.UnitAd,
-                             NameUser = ui.NameUser,
-                             Surname = ui.Surname,
-                             Phone = ui.Phone
-                         }).ToList();
+                           join ui in _context.UsersInfo on u.Name equals ui.NameId
+                           join uu in _context.UsersUnit on u.Unit equals uu.UnitId
+                           join uo in _context.UsersCom on u.Com equals uo.ComId
+                           where u.tcNo == sessionTcNo
+                           select new UserViewModel
+                           {
+                               Id = u.Id,
+                               taxNo = u.taxNo,
+                               tcNo = u.tcNo,
+                               ComAd = uo.ComAd,
+                               Email = u.Email,
+                               UnitAd = uu.UnitAd,
+                               NameUser = ui.NameUser,
+                               Surname = ui.Surname,
+                               Phone = ui.Phone
+                           }).ToList();
 
             ViewBag.UserList = usersTc;
+
             if (sessionTcNo != null)
             {
                 // QR kodu oluşturma ve şifreleme TcNo için
